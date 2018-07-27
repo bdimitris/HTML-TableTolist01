@@ -15,7 +15,7 @@ namespace HTML_TableTolist01
         static void Main(string[] args)
         {
 
-            List<string> linesFromFile = GetLinesFromFile(@"X:\Feature Line Report2.html", out int numberOfFetchedLines);
+            List<string> linesFromFile = GetLinesFromFile(@"X:\Feature Line Report3.html", out int numberOfFetchedLines);
 
             List<string> listOfStations = GetNumberOfStations(linesFromFile);
 
@@ -134,7 +134,7 @@ namespace HTML_TableTolist01
                     newItem = Regex.Replace(newItem, "\\+", "");
                     newItem = Regex.Replace(newItem, "m", "");
 
-                    Regex r1 = new Regex("Station", RegexOptions.IgnorePatternWhitespace | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                    Regex r1 = new Regex("Station:", RegexOptions.IgnorePatternWhitespace | RegexOptions.Singleline | RegexOptions.IgnoreCase);
                     MatchCollection matches1 = r1.Matches(newItem);
 
                     foreach (Match match in matches1)
@@ -146,8 +146,7 @@ namespace HTML_TableTolist01
                 }
             }
 
-            // clean list of stations
-            result.RemoveAt(0);
+            // clean list of stations            
             for (int j = 0; j < result.Count; j++)
             {
                 result[j] = result[j].Replace("Station: ", "");
