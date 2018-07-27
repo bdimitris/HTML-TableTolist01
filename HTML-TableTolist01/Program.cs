@@ -10,6 +10,8 @@ namespace HTML_TableTolist01
 {
     class Program
     {
+        public const int htmlTableWidth = 15;
+
         static void Main(string[] args)
         {
 
@@ -17,11 +19,11 @@ namespace HTML_TableTolist01
 
             List<string> listOfStations = GetNumberOfStations(linesFromFile);
 
-            string[,] matrixFromSource = new string[numberOfFetchedLines, 15];
+            string[,] matrixFromSource = new string[numberOfFetchedLines, htmlTableWidth];
 
-            matrixFromSource = GetCleanMatrix(linesFromFile, numberOfFetchedLines);
+            matrixFromSource = GetCleanMatrix(linesFromFile, numberOfFetchedLines, htmlTableWidth);
 
-            List<DataPoint> points = GetPointsFromMatrix(matrixFromSource, numberOfFetchedLines, listOfStations);
+            List<DataPoint> points = GetPointsFromMatrix(matrixFromSource, numberOfFetchedLines, htmlTableWidth, listOfStations);
             
             SaveNXYH(points, "test.txt");
 
@@ -120,7 +122,7 @@ namespace HTML_TableTolist01
         public static List<string> GetNumberOfStations (List<string> input)
         {
             List<string> result = new List<string>();
-            int i = 0;
+
             foreach (string item in input)
             {
                 string newItem = null;
@@ -140,12 +142,11 @@ namespace HTML_TableTolist01
                         result.Add(newItem);
                         //Console.Write(match.Groups[1].ToString());
                         //Console.WriteLine();
-                    }
-                    i++;                   
+                    }                 
                 }
             }
 
-            // fix list of stations
+            // clean list of stations
             result.RemoveAt(0);
             for (int j = 0; j < result.Count; j++)
             {
@@ -155,10 +156,10 @@ namespace HTML_TableTolist01
             return result;
         }
 
-        public static string [,] GetCleanMatrix (List<string> input, int linesNumber)
+        public static string [,] GetCleanMatrix (List<string> input, int linesNumber, int tableWidth)
         {
-            string[,] cleanStrings = new string[linesNumber, 15];
-            string[,] cleanStringsCurated = new string[linesNumber, 15];
+            string[,] cleanStrings = new string[linesNumber, tableWidth];
+            string[,] cleanStringsCurated = new string[linesNumber, tableWidth];
 
             int i = 0;
             foreach (string item in input)
@@ -190,7 +191,7 @@ namespace HTML_TableTolist01
 
             for (int x = 0; x < linesNumber; x++)
             {
-                for (int y = 0; y < 15; y++)
+                for (int y = 0; y < tableWidth; y++)
                 {
                     if (cleanStrings[x, 0] == "Code" ||
                         cleanStrings[x, 0] == "Offset" ||
@@ -201,13 +202,12 @@ namespace HTML_TableTolist01
                         if (cleanStrings[x, y] != "&nbsp;")
                             cleanStringsCurated[x, y] = cleanStrings[x, y];
                 }
-
             }
 
             return cleanStringsCurated;
         }
 
-        public static List<DataPoint> GetPointsFromMatrix (string[,] input, int linesNumber, List<string> stations)
+        public static List<DataPoint> GetPointsFromMatrix (string[,] input, int linesNumber, int tableWidth, List<string> stations)
         {
             int pointCounter = 0;
             int stationCounter = 0;
@@ -219,7 +219,7 @@ namespace HTML_TableTolist01
 
                 if (input[x, 0] == "Offset")
                 {
-                    for (int y = 0; y < 15; y++)
+                    for (int y = 0; y < tableWidth; y++)
                     {
                         if (double.TryParse(input[x, y], out _))
                         {
